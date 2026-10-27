@@ -23,7 +23,7 @@
 		{
 			"Name": "MikanXREditor",
 			"Type": "Editor",
-			"LoadingPhase": "PreDefault"
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [

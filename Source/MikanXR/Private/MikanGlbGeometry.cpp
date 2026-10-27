@@ -30,7 +30,7 @@ FString MakeGeometryUrl(const FString& GeometryUrl)
 		return FString();
 	}
 
-	const FString BaseUrl = UTF8_TO_TCHAR(MikanAPI->getHttpBaseUrl().c_str());
+	const FString BaseUrl = UTF8_TO_TCHAR(MikanAPI->getHttpBaseUrl());
 	return BaseUrl.IsEmpty() ? FString() : BaseUrl + GeometryUrl;
 }
 
