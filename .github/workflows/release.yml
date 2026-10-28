@@ -1,0 +1,83 @@
+name: Release
+
+# Pushing a v<version> tag (v1.2.0) zips the plugin folder and drafts a GitHub release with
+# the zip attached. The draft is never published automatically: the release notes and the
+# zip get a human read before anyone can download them.
+#
+# The zip is source only. Hosted runners have no Unreal install, so nothing is compiled
+# here: consumers build the plugin in their own C++ project, and BuildPlugin.bat is the
+# local check that it compiles on its own.
+#
+# A manual run is a dry run: it packages the same zip as a workflow artifact, versioned
+# from the commit, and publishes nothing. gh workflow run release.yml
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Needed by the draft-release step, which creates a release object on this repository.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve the version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Tag $GITHUB_REF_NAME is not v<major>.<minor>.<patch>"
+              exit 1
+            fi
+          else
+            VERSION="0.0.0-dev.${GITHUB_SHA::7}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # The uplugin's VersionName is what the editor's plugin browser shows, so the
+      # shipped copy carries the release version rather than whatever was last committed.
+      - name: Stamp the plugin version
+        shell: bash
+        run: |
+          sed -i -E 's/("VersionName"[[:space:]]*:[[:space:]]*)"[^"]*"/\1"${{ steps.version.outputs.version }}"/' \
+            Plugins/MikanXR_UE/MikanXR.uplugin
+          grep '"VersionName"' Plugins/MikanXR_UE/MikanXR.uplugin
+
+      # The zip's top folder is MikanXR_UE, so it extracts straight into a project's Plugins
+      # folder. Build outputs never ship, since they only match the engine that made them.
+      - name: Package the plugin
+        shell: bash
+        run: |
+          ZIP="MikanXR_UE_${{ steps.version.outputs.version }}.zip"
+          mkdir -p dist
+          cd Plugins
+          zip -r -q "../dist/$ZIP" MikanXR_UE \
+            -x 'MikanXR_UE/Binaries/*' 'MikanXR_UE/Intermediate/*' \
+               '*/__pycache__/*' '*.pyc' '*.pdb'
+          cd ..
+          unzip -l "dist/$ZIP" | tail -n 1
+
+      - name: Upload the zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: MikanXR_UE-${{ steps.version.outputs.version }}
+          path: dist/MikanXR_UE_*.zip
+          retention-days: 14
+
+      # A tag push only: a manual dry run stops at the workflow artifact above
+      - name: Draft the GitHub release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: dist/MikanXR_UE_*.zip
