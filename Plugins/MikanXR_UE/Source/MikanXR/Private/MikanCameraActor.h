@@ -236,6 +236,7 @@ public:
 
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;
 	virtual void UnbindMikanComponentData(class UMikanComponentData* Data) override;
+	virtual void OnMikanAttachmentChanged() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USceneComponent* CameraForward;
@@ -267,6 +268,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<AMikanFrameCaptureActor> FrameCaptureActor;
+
+	// The capture actor follows the camera's stage, which may not be known yet when the
+	// camera begins play
+	void AttachFrameCaptureToStage();
 
 	class IMikanAPI* MikanAPI= nullptr;
 };

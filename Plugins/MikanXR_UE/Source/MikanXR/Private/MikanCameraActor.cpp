@@ -964,10 +964,10 @@ void AMikanCameraActor::BeginPlay()
 
 		if (FrameCaptureActor)
 		{
-			AMikanTransformActor* StageActor= GetParentTransformActor();
-			check(StageActor);
-
-			FrameCaptureActor->AttachToActor(StageActor, FAttachmentTransformRules::KeepWorldTransform);
+			// Spawned into a playing world, this camera begins play inside FinishSpawning, before
+			// the client binds its data and resolves its stage. The attachment then lands in
+			// OnMikanAttachmentChanged instead.
+			AttachFrameCaptureToStage();
 
 			// If we already have transform data bound, let the FrameCaptureActor know it's valid
 			if (GetTransformData())
@@ -975,6 +975,22 @@ void AMikanCameraActor::BeginPlay()
 				FrameCaptureActor->NotifyMikanComponentDataBound();
 			}
 		}
+	}
+}
+
+void AMikanCameraActor::OnMikanAttachmentChanged()
+{
+	Super::OnMikanAttachmentChanged();
+
+	AttachFrameCaptureToStage();
+}
+
+void AMikanCameraActor::AttachFrameCaptureToStage()
+{
+	AMikanTransformActor* StageActor= GetParentTransformActor();
+	if (FrameCaptureActor && StageActor)
+	{
+		FrameCaptureActor->AttachToActor(StageActor, FAttachmentTransformRules::KeepWorldTransform);
 	}
 }
 
