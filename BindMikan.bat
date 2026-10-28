@@ -1,7 +1,9 @@
 @echo off
 setlocal
 
-::Select the path to the root Boost folder
+:: Records the MikanXR client SDK folder FetchMikan.bat copies from, then runs the fetch.
+:: Pass the SDK folder as an argument, or pick it from a folder browser.
+if not "%~1"=="" set "MIKAN_DIST_PATH=%~1"
 if DEFINED MIKAN_DIST_PATH (goto setup_copy_script)
 set "psCommand="(new-object -COM 'Shell.Application')^
 .BrowseForFolder(0,'Please select the MikanXR client SDK folder (ex: C:\MikanXR\dist\ClientSDK\Win64).',0,0).self.path""

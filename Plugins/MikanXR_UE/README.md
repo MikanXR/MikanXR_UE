@@ -77,6 +77,10 @@ Client side:
 - `mikan stage`, `push`, `pop`, and `rc` block on the Mikan editor's reply and answer an error when not connected.
 - Requests carry a fifteen second deadline. If one goes unanswered the fetch fails instead of hanging, the log names the likely cause, and the details panel shows `Fetch failed`. `mikan fetchstatus` reports the same state the panel shows. Reconnecting with `mikan disconnect` then `mikan connect` rebuilds the store. This is a safety net: the stall it was written for came from the Mikan editor's websocket server and is fixed, so a timeout now means something genuinely went wrong.
 
-## Publishing
+## Default assets
 
-`PushToMikanXR_UE.bat` mirrors `Source`, `ThirdParty`, `Tools`, and this README into the standalone plugin repository checkout. `BindMikan.bat` and `FetchMikan.bat` pull the MikanXR client headers, import libraries, and DLLs from a MikanXR client SDK: `dist/ClientSDK/Win64` in a MikanXR checkout after its `INSTALL_CLIENT_SDK` target, or an unpacked `ClientSDK` zip from a MikanXR release. `BindMikan.bat` records that folder in `SetMikanVars_x64.bat` and runs the fetch.
+`AMikanClient`, `AMikanLightEnvironmentActor`, and `AMikanRGBSpotLightActor` default to materials and a mesh in the plugin's own `Content`, so the C++ classes render without a Blueprint subclass. A Blueprint subclass can still override any of them. The plugin's assets are saved from the oldest engine version the plugin supports (5.5), since an asset saved by a newer engine cannot be opened by an older one.
+
+## Source and the client SDK
+
+The plugin is developed in [MikanXR_UE](https://github.com/MikanXR/MikanXR_UE), whose test project hosts it at `Plugins/MikanXR_UE`. Release zips of this folder are published there. The MikanXR client headers, import libraries, and DLLs under `ThirdParty/MikanXR` are refreshed with that repository's `BindMikan.bat` and `FetchMikan.bat`.

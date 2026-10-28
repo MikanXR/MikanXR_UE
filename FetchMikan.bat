@@ -1,11 +1,13 @@
 @echo off
-call %~dp0SetMikanVars_x64.bat
+if not exist "%~dp0SetMikanVars_x64.bat" goto failure_unbound
+call "%~dp0SetMikanVars_x64.bat"
 
-set "PLUGIN_BIN_DIR=%~dp0ThirdParty\MikanXR\bin\win64"
-set "PLUGIN_LIB_DIR=%~dp0ThirdParty\MikanXR\lib\win64"
-set "PLUGIN_INC_DIR=%~dp0ThirdParty\MikanXR\include"
-set "PLUGIN_OUT_DIR=%~dp0Binaries\Win64"
-set "PROJECT_OUT_DIR=%~dp0..\..\Binaries\Win64"
+set "PLUGIN_DIR=%~dp0Plugins\MikanXR_UE"
+set "PLUGIN_BIN_DIR=%PLUGIN_DIR%\ThirdParty\MikanXR\bin\win64"
+set "PLUGIN_LIB_DIR=%PLUGIN_DIR%\ThirdParty\MikanXR\lib\win64"
+set "PLUGIN_INC_DIR=%PLUGIN_DIR%\ThirdParty\MikanXR\include"
+set "PLUGIN_OUT_DIR=%PLUGIN_DIR%\Binaries\Win64"
+set "PROJECT_OUT_DIR=%~dp0Binaries\Win64"
 
 echo "Clear Output Binaries"
 if exist "%PLUGIN_OUT_DIR%\*.dll" del /q "%PLUGIN_OUT_DIR%\*.dll"
@@ -24,8 +26,8 @@ if exist "%PLUGIN_INC_DIR%\*.h" del /q "%PLUGIN_INC_DIR%\*.h"
 if exist "%PLUGIN_LIB_DIR%\*.lib" del /q "%PLUGIN_LIB_DIR%\*.lib"
 if exist "%PLUGIN_BIN_DIR%\*.dll" del /q "%PLUGIN_BIN_DIR%\*.dll"
 
-REM copy does not create its destination, and lib\win64 holds no files that git
-REM tracks, so a fresh clone arrives without it.
+REM copy does not create its destination, and the project and plugin Binaries
+REM folders do not exist until the first build.
 echo "Ensure Output Folders"
 if not exist "%PLUGIN_BIN_DIR%" mkdir "%PLUGIN_BIN_DIR%" || goto failure
 if not exist "%PLUGIN_LIB_DIR%" mkdir "%PLUGIN_LIB_DIR%" || goto failure
@@ -49,6 +51,10 @@ echo "Copy Mikan Libs"
 copy /y "%MIKAN_DIST_PATH%\lib\*.lib" "%PLUGIN_LIB_DIR%" || goto failure_lib
 
 EXIT /B 0
+
+:failure_unbound
+echo "No client SDK bound. Run BindMikan.bat first."
+goto failure
 
 :failure_sdk
 echo "No MikanXR client SDK at %MIKAN_DIST_PATH%"
