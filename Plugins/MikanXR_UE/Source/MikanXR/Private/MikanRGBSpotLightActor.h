@@ -55,6 +55,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class USpotLightComponent> SpotLightComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> FixtureMesh;
+
 	// FUNCTIONS---------------------------------
 #if WITH_EDITOR
 	//~ Begin AActor Interface.

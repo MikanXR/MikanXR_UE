@@ -3,7 +3,10 @@
 #include "MikanDMXDataStore.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "UObject/ConstructorHelpers.h"
 #include "MikanUtils.h"
 
 // -- UMikanRGBSpotLightData -----
@@ -87,6 +90,18 @@ AMikanRGBSpotLightActor::AMikanRGBSpotLightActor(const FObjectInitializer& Objec
 		SpotLightComponent->LightColor = FColor::Black;
 		SpotLightComponent->bUseTemperature = false;
 		SpotLightComponent->SetupAttachment(LightForward);
+	}
+
+	// The fixture's housing, so a spawned light is visible in the scene
+	FixtureMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FixtureMesh"));
+	FixtureMesh->SetupAttachment(LightForward);
+	FixtureMesh->SetRelativeLocation(FVector(-42.f, 0.f, 0.f));
+	FixtureMesh->SetRelativeRotation(FRotator(0.f, 90.f, -90.f));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> HousingMesh(
+		TEXT("/MikanXR/Meshes/PAR_Light_BracketCenter.PAR_Light_BracketCenter"));
+	if (HousingMesh.Succeeded())
+	{
+		FixtureMesh->SetStaticMesh(HousingMesh.Object);
 	}
 }
 

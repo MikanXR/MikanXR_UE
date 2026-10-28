@@ -146,16 +146,22 @@ AMikanLightEnvironmentActor::AMikanLightEnvironmentActor(const FObjectInitialize
 	{
 		SkydomeComponent->SetStaticMesh(SphereMesh.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultSkydomeMaterial(
+		TEXT("/MikanXR/Materials/M_MikanSkydome.M_MikanSkydome"));
+	if (DefaultSkydomeMaterial.Succeeded())
+	{
+		SkydomeMaterial = DefaultSkydomeMaterial.Object;
+	}
 }
 
 void AMikanLightEnvironmentActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Deliberately not defaulted to a /Game/ asset: this plugin is shared across
-	// projects, so a hard reference to project content would fail to resolve
-	// elsewhere. Without it the dome renders black and silently contributes no
-	// light, so say so plainly rather than letting it look like a bad estimate.
+	// Defaults to the plugin's M_MikanSkydome, but a project can clear it. Without
+	// a material the dome renders black and silently contributes no light, so say
+	// so plainly rather than letting it look like a bad estimate.
 	if (SkydomeMaterial == nullptr)
 	{
 		UE_LOG(LogTemp, Warning,

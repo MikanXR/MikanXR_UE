@@ -10,6 +10,8 @@
 #include "Engine/World.h"
 #include "GameFramework/WorldSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInterface.h"
+#include "UObject/ConstructorHelpers.h"
 
 #include "MikanAnchorActor.h"
 #include "MikanAnchorTypes.h"
@@ -52,6 +54,23 @@ AMikanClient::AMikanClient(const FObjectInitializer& ObjectInitializer)
 	StageClass = AMikanStageActor::StaticClass();
 	RGBSpotLightClass = AMikanRGBSpotLightActor::StaticClass();
 	RGBPixelGridCameraClass = AMikanRGBPixelGridActor::StaticClass();
+	LightEnvironmentClass = AMikanLightEnvironmentActor::StaticClass();
+
+	// Default materials from the plugin's own content, so a client placed without a
+	// Blueprint subclass renders stencils, shapes, and shadows
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> BasicMaterial(
+		TEXT("/MikanXR/Materials/M_Basic_Wall.M_Basic_Wall"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> StencilShadowMaterial(
+		TEXT("/MikanXR/Materials/M_StencilShadowMaterial.M_StencilShadowMaterial"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultShadowDivideMaterial(
+		TEXT("/MikanXR/Materials/M_ShadowDivide.M_ShadowDivide"));
+	ModelStencilColorMaterial = BasicMaterial.Object;
+	ModelStencilDepthMaterial = BasicMaterial.Object;
+	ModelStencilTexturedPlacementMaterial = BasicMaterial.Object;
+	ModelShapeColorMaterial = BasicMaterial.Object;
+	ModelShapeDepthMaterial = BasicMaterial.Object;
+	ModelStencilShadowMaterial = StencilShadowMaterial.Object;
+	ShadowDivideMaterial = DefaultShadowDivideMaterial.Object;
 }
 
 void AMikanClient::PostRegisterAllComponents()
