@@ -78,13 +78,13 @@ public:
 	void CancelAllRequests();
 
 	// Remote Control API
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Mikan")
 	bool SendPushAppStageRequest(const FString& StageName);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Mikan")
 	bool SendPopAppStageRequest();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Mikan")
 	bool GetCurrentAppStageName(FString& OutStateName);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Mikan")
 	void SendRemoteControlCommand(
 		const FString& CommandType,
 		const TArray<FString>& CommandArgs,

@@ -38,19 +38,19 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProceduralMeshComponent* ColorMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProceduralMeshComponent* DepthMeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ColorMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* DepthMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan")
 	float ColorMeshInflationAmountMM = 0.1f;
 
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;

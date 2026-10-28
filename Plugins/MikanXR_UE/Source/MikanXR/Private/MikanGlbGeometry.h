@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "Interfaces/IHttpRequest.h"
 
+class UTexture2D;
+
 // One triangle list from a Mikan geometry GLB, still in Mikan's world convention (meters,
 // right-handed, Y up). UVs are V-down as glTF stores them, which is also how Unreal samples.
 struct FMikanGlbMesh
@@ -42,5 +44,5 @@ void CancelFetch(TSharedPtr<IHttpRequest, ESPMode::ThreadSafe>& Request);
 bool ParseGlb(const TArray<uint8>& Bytes, FMikanGlbGeometry& OutGeometry, FString& OutError);
 
 // Decodes an encoded image into a transient texture, or returns null
-class UTexture2D* CreateTexture(const TArray<uint8>& EncodedImage);
+UTexture2D* CreateTexture(const TArray<uint8>& EncodedImage);
 } // namespace MikanGlbGeometry

@@ -42,42 +42,42 @@ public:
 
 	// Visible in the editor and PIE for placement / navigating relative to the stencil. Not in any
 	// Mikan capture (untagged), so it never appears in a render target.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* PlacementMeshComponent;
 
 	// Capture-only by default and untagged, so it renders nowhere. Opt in via bRenderColorMeshInColorTarget
 	// to tag it MikanRenderColor and draw the stencil's actual color into the color render target.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* ColorMeshComponent;
 
 	// Capture-only holdout occluder for the color pass: writes scene depth (so the character behind
 	// the stencil is cut out) but outputs alpha 0 (invisible), letting the real surface show through.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* HoldoutMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* DepthMeshComponent;
 
 	// Shadow catcher mesh, rendered only by the shadow capture. Receives cast shadows with a
 	// white catcher material so the shadow pass produces the per-channel shadow (A/B) factor.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* ShadowMeshComponent;
 
 	// MikanCaptureComponent looks for actors with MikanRenderableComponent to gather meshes
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UMikanRenderableComponent* MikanRenderableComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ColorMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* DepthMaterial;
 
 	// Pure Lambertian Diffuse material
 	// * Base Color = white(1, 1, 1)
 	// * Metallic = 0, Roughness = 1, Specular = 0
 	// * Default Lit, Opaque, Receives shadows(default), Casts no shadow itself
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ShadowMaterial;
 
 	// Parent material for texturing the placement mesh with the stencil's own texture (the captured
@@ -85,13 +85,13 @@ public:
 	// stencil's geometry GLB. Needs a Texture parameter named "BaseTexture". When unset, or when the
 	// geometry carries no texture, the placement mesh uses ColorMaterial. Not defaulted to a /Game/ asset - the plugin is shared
 	// across projects (same reasoning as the light environment's skydome material).
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* TexturedPlacementMaterial;
 
 	// When true, ColorMeshComponent is tagged MikanRenderColor so the stencil's color is drawn into
 	// the color render target (in addition to the holdout occluder). Off by default. Applied in
 	// OnConstruction so Blueprint / instance overrides are honored before renderable registration.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mikan")
 	bool bRenderColorMeshInColorTarget = false;
 
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;

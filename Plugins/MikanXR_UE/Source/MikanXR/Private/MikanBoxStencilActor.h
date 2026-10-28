@@ -40,6 +40,6 @@ public:
 
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mikan")
 	FVector Extents;
 };

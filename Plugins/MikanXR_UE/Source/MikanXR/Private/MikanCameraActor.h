@@ -119,7 +119,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnShadowRenderTargetUpdated"))
 	void ReceiveShadowRenderTargetUpdated();
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	inline float GetDepthRange() const { return DepthRangeUU; }
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnDepthRangeUpdated"))

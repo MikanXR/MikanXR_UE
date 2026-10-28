@@ -38,7 +38,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	FVector GetExtents() const { return Extents; }
 
 private:

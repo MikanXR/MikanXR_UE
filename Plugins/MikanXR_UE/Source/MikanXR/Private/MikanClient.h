@@ -58,10 +58,10 @@ public:
 	virtual void Destroyed() override;
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Mikan")
 	void SetActiveMikanScene(class AMikanSceneActor* DesiredScene);
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	inline class AMikanSceneActor* GetActiveMikanScene() const { return ActiveMikanScene; }
 
 	// Converts the metric camera state the editor sends into Unreal units. The frame event, the
@@ -127,12 +127,12 @@ public:
 	bool RegisterMikanRenderable(class UMikanRenderableComponent* Renderable);
 	void UnregisterMikanRenderable(class UMikanRenderableComponent* Renderable);
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	inline TArray<class UMikanRenderableComponent*>& GetRegisteredMikanRenderables() { return RegisteredRenderables; }
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	const class AMikanTransformActor* GetTransformActorByIdConst(int32 TransformID) const;
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	class AMikanTransformActor* GetTransformActorById(int32 TransformID);
 
 	inline const TMap<FString, FMikanSystemActors>& GetSystemActorTable() const { return SystemActorTable; }
@@ -167,19 +167,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mikan")
 	TSubclassOf<class AMikanLightEnvironmentActor> LightEnvironmentClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelStencilColorMaterial;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelStencilDepthMaterial;
 	// White, shadow-receiving catcher material used by the model-stencil shadow mesh. Authored
 	// in-editor; the shadow capture renders this to produce the per-channel shadow (A/B) factor.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelStencilShadowMaterial;
 	// Parent material for texturing a model stencil's placement mesh with the texture embedded in
 	// its geometry GLB (a depth proxy's captured frame or an occlusion mesh's atlas). Needs a
 	// Texture parameter named "BaseTexture". Optional: when unset the placement mesh uses the
 	// color material as before.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelStencilTexturedPlacementMaterial;
 
 	/**
@@ -196,12 +196,12 @@ public:
 	 * 
 	 * This material is drawn into the published shadow render target.
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ShadowDivideMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelShapeColorMaterial;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mikan|Materials")
 	class UMaterialInterface* ModelShapeDepthMaterial;
 
 	// Scene Events

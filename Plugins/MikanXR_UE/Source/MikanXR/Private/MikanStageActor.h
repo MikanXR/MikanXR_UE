@@ -45,10 +45,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnMikanScriptMessage(const FString& Message);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mikan")
 	FVector StageBoundsMin = FVector::ZeroVector;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mikan")
 	FVector StageBoundsMax = FVector::ZeroVector;
 
 	virtual void BindMikanComponentData(UMikanComponentData* Data) override;

@@ -11,6 +11,7 @@
 #include "MikanStencilTypes.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 #include "GameFramework/WorldSettings.h"
 #include "DrawDebugHelpers.h"
 #include "MaterialDomain.h"

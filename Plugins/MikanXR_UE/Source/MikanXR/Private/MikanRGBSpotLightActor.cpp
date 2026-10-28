@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "GameFramework/WorldSettings.h"
 #include "UObject/ConstructorHelpers.h"
 #include "MikanUtils.h"
 

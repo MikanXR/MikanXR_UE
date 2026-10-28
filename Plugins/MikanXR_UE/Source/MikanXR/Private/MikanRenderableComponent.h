@@ -15,7 +15,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	bool OverlapsCone(const FVector& Origin, const FVector& Direction, float HalfAngleDegrees) const;
 
 protected:

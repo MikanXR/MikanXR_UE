@@ -38,7 +38,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BindMikanComponentData(UMikanComponentData* Data) override;
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Mikan")
 	FVector2D GetQuadSize() const { return QuadSize; }
 
 private:
