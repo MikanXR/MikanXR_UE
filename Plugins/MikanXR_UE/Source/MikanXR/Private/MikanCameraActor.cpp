@@ -702,8 +702,9 @@ bool AMikanFrameCaptureActor::EnsureRenderBuffers(int FrameBufferWidth, int Fram
 	DesiredRenderTargetDesc.aux_height = (uint32_t)AuxBufferHeight;
 	// RGBA16F half-float preserves the HDR (SCS_SceneColorHDR) values that RTF_RGBA8 truncated.
 	DesiredRenderTargetDesc.color_buffer_type = MikanColorBuffer_RGBA16F;
-	// Depth is opt-in (bEnableDepthCapture). When off, the color capture bakes environment
-	// occlusion of the character client-side and the shadow buffer carries the cast-shadow factor.
+	// Depth follows bEnableDepthCapture, on by default for the compositor's depth of field. The
+	// color capture bakes environment occlusion of the character client-side either way, and the
+	// shadow buffer carries the cast-shadow factor.
 	DesiredRenderTargetDesc.depth_buffer_type =
 		bEnableDepthCapture ? MikanDepthBuffer_FLOAT_SCENE_DEPTH : MikanDepthBuffer_NODEPTH;
 	DesiredRenderTargetDesc.shadow_buffer_type = MikanShadowBuffer_RGBA16F;
@@ -964,10 +965,10 @@ void AMikanCameraActor::BeginPlay()
 
 		if (FrameCaptureActor)
 		{
-			AMikanTransformActor* StageActor= GetParentTransformActor();
-			check(StageActor);
-
-			FrameCaptureActor->AttachToActor(StageActor, FAttachmentTransformRules::KeepWorldTransform);
+			// Spawned into a playing world, this camera begins play inside FinishSpawning, before
+			// the client binds its data and resolves its stage. The attachment then lands in
+			// OnMikanAttachmentChanged instead.
+			AttachFrameCaptureToStage();
 
 			// If we already have transform data bound, let the FrameCaptureActor know it's valid
 			if (GetTransformData())
@@ -975,6 +976,22 @@ void AMikanCameraActor::BeginPlay()
 				FrameCaptureActor->NotifyMikanComponentDataBound();
 			}
 		}
+	}
+}
+
+void AMikanCameraActor::OnMikanAttachmentChanged()
+{
+	Super::OnMikanAttachmentChanged();
+
+	AttachFrameCaptureToStage();
+}
+
+void AMikanCameraActor::AttachFrameCaptureToStage()
+{
+	AMikanTransformActor* StageActor= GetParentTransformActor();
+	if (FrameCaptureActor && StageActor)
+	{
+		FrameCaptureActor->AttachToActor(StageActor, FAttachmentTransformRules::KeepWorldTransform);
 	}
 }
 

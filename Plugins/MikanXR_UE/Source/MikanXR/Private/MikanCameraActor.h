@@ -79,12 +79,12 @@ public:
 	void ReceiveColorRenderTargetUpdated();
 
 	// When true, a depth capture component + depth render target are created and the linearized
-	// scene depth buffer is sent to Mikan. Off by default: this client composites shadows and bakes
-	// environment occlusion of the character into the color pass client-side, so depth isn't needed.
-	// Read at BeginPlay (the depth component is created there), so set it on the class default / a
-	// Blueprint subclass rather than expecting a live runtime toggle.
+	// scene depth buffer is sent to Mikan. On by default: the compositor's depth of field needs the
+	// client's depth, though occlusion of the character is still baked into the color pass
+	// client-side. Read at BeginPlay (the depth component is created there), so set it on the class
+	// default / a Blueprint subclass rather than expecting a live runtime toggle.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mikan")
-	bool bEnableDepthCapture = false;
+	bool bEnableDepthCapture = true;
 
 	// Created at runtime in BeginPlay only when bEnableDepthCapture is set; otherwise null.
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "Components")
@@ -236,6 +236,7 @@ public:
 
 	virtual void BindMikanComponentData(class UMikanComponentData* Data) override;
 	virtual void UnbindMikanComponentData(class UMikanComponentData* Data) override;
+	virtual void OnMikanAttachmentChanged() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USceneComponent* CameraForward;
@@ -267,6 +268,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<AMikanFrameCaptureActor> FrameCaptureActor;
+
+	// The capture actor follows the camera's stage, which may not be known yet when the
+	// camera begins play
+	void AttachFrameCaptureToStage();
 
 	class IMikanAPI* MikanAPI= nullptr;
 };
