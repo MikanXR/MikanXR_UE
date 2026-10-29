@@ -409,11 +409,24 @@ void UMikanEngineSubsystem::HandleScriptMessage(const MikanScriptMessagePostedEv
 
 void UMikanEngineSubsystem::SendSubscribeToPropertyUpdates()
 {
-	if (MikanAPI)
+	if (MikanAPI && DataStore)
 	{
-		SetPropertyNotifyMode subscribeRequest = {};
-		subscribeRequest.notifyMode = MikanPropertyNotifyMode::NAME_AND_VALUE;
-		MikanAPI->sendRequest(subscribeRequest).awaitResponse();
+		// Subscribe only to the systems the data store mirrors, so Mikan never
+		// sends property updates this client would discard. An update for an
+		// unregistered system still logs an error, flagging wasted traffic.
+		TArray<MikanResponseFuture> PendingResponses;
+		for (const auto& SystemEntry : DataStore->GetSystemsTable())
+		{
+			SetPropertyNotifyMode subscribeRequest = {};
+			subscribeRequest.systemFilter.setUtf8Value(TCHAR_TO_UTF8(*SystemEntry.Key));
+			subscribeRequest.notifyMode = MikanPropertyNotifyMode::NAME_AND_VALUE;
+			PendingResponses.Emplace(MikanAPI->sendRequest(subscribeRequest));
+		}
+
+		for (MikanResponseFuture& PendingResponse : PendingResponses)
+		{
+			PendingResponse.awaitResponse();
+		}
 	}
 }
 
