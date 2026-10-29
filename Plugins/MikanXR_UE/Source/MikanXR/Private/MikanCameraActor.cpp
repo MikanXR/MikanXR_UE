@@ -702,8 +702,9 @@ bool AMikanFrameCaptureActor::EnsureRenderBuffers(int FrameBufferWidth, int Fram
 	DesiredRenderTargetDesc.aux_height = (uint32_t)AuxBufferHeight;
 	// RGBA16F half-float preserves the HDR (SCS_SceneColorHDR) values that RTF_RGBA8 truncated.
 	DesiredRenderTargetDesc.color_buffer_type = MikanColorBuffer_RGBA16F;
-	// Depth is opt-in (bEnableDepthCapture). When off, the color capture bakes environment
-	// occlusion of the character client-side and the shadow buffer carries the cast-shadow factor.
+	// Depth follows bEnableDepthCapture, on by default for the compositor's depth of field. The
+	// color capture bakes environment occlusion of the character client-side either way, and the
+	// shadow buffer carries the cast-shadow factor.
 	DesiredRenderTargetDesc.depth_buffer_type =
 		bEnableDepthCapture ? MikanDepthBuffer_FLOAT_SCENE_DEPTH : MikanDepthBuffer_NODEPTH;
 	DesiredRenderTargetDesc.shadow_buffer_type = MikanShadowBuffer_RGBA16F;
