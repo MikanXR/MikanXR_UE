@@ -21,12 +21,17 @@ public:
 
 	inline const FString& GetModelPath() const { return ModelPath; }
 	inline const FString& GetGeometryUrl() const { return GeometryUrl; }
+	inline bool IsClientHoldout() const { return bClientHoldout; }
 
 private:
 	FString ModelPath;
 	FString GeometryUrl;
+	bool bClientHoldout = true;
 };
 
+// client_holdout true (the default) draws the stencil as a holdout occluder and in the published depth.
+// False hides the holdout and depth meshes, so the client sends unoccluded colour and depth and the
+// editor's compositor decides occlusion per pixel. The shadow catcher is unaffected.
 UCLASS(BlueprintType, Blueprintable)
 class AMikanModelStencilActor : public AMikanStencilActor
 {
@@ -101,6 +106,10 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	void ApplyModelRenderGeometry(const struct FMikanGlbGeometry& Geometry);
 	void RefetchModelRenderGeometry();
+
+	// Shows the holdout and depth meshes only while the stencil's client_holdout is true. Capture
+	// tags are read once at renderable registration, so visibility is the runtime switch.
+	void ApplyClientHoldout();
 
 	// Builds one transient UStaticMesh from the fetched geometry, one section per incoming mesh.
 	// Returns null when the geometry has no usable triangles.

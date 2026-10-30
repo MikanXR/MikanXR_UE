@@ -29,6 +29,7 @@ void UMikanModelStencilData::Initialize(const Serialization::PolymorphicObjectPt
 	const auto* ModelStencilValues = InValuesObject.getTypedPointer<MikanModelStencilComponentValues>();
 	Mikan::ToUnrealString(ModelStencilValues->model_path, ModelPath);
 	Mikan::ToUnrealString(ModelStencilValues->geometry_url, GeometryUrl);
+	bClientHoldout = ModelStencilValues->client_holdout;
 }
 
 bool UMikanModelStencilData::ApplyMikanValue(const FString& FieldName, const MikanVariant& FieldValue)
@@ -43,6 +44,11 @@ bool UMikanModelStencilData::ApplyMikanValue(const FString& FieldName, const Mik
 		Mikan::ToUnrealString(FieldValue, GeometryUrl);
 		return true;
 	}
+	else if (FieldName == "client_holdout")
+	{
+		bClientHoldout = FieldValue.getBoolValue();
+		return true;
+	}
 	else
 	{
 		return UMikanStencilData::ApplyMikanValue(FieldName, FieldValue);
@@ -54,6 +60,7 @@ void UMikanModelStencilData::Describe(TArray<FString>& OutLines) const
 	UMikanStencilData::Describe(OutLines);
 	Mikan::AppendDescribeLine(OutLines, TEXT("model_path"), ModelPath);
 	Mikan::AppendDescribeLine(OutLines, TEXT("geometry_url"), GeometryUrl);
+	Mikan::AppendDescribeLine(OutLines, TEXT("client_holdout"), bClientHoldout);
 }
 
 // -- AMikanModelStencilActor -----
@@ -409,7 +416,17 @@ void AMikanModelStencilActor::BindMikanComponentData(class UMikanComponentData* 
 		}
 	}
 
+	ApplyClientHoldout();
 	RefetchModelRenderGeometry();
+}
+
+void AMikanModelStencilActor::ApplyClientHoldout()
+{
+	const auto* StencilData = Cast<UMikanModelStencilData>(GetTransformData());
+	const bool bHoldout = StencilData != nullptr ? StencilData->IsClientHoldout() : true;
+
+	HoldoutMeshComponent->SetVisibility(bHoldout);
+	DepthMeshComponent->SetVisibility(bHoldout);
 }
 
 void AMikanModelStencilActor::OnComponentDataChanged(const FString& FieldName)
@@ -419,6 +436,10 @@ void AMikanModelStencilActor::OnComponentDataChanged(const FString& FieldName)
 	if (FieldName == "geometry_url")
 	{
 		RefetchModelRenderGeometry();
+	}
+	else if (FieldName == "client_holdout")
+	{
+		ApplyClientHoldout();
 	}
 	else
 	{
