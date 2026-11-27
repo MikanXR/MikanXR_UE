@@ -10,6 +10,8 @@ A Mikan project can hold several scenes, including more than one on the same sta
 
 A scene with the editor's Force Render flag set stays visible while another scene is active. That is how two stages get aligned against each other with both scenes on screen.
 
+A scene names the camera it is shot through in `camera_id` and its lighting probe in `light_environment_id`, both mirrored on `UMikanSceneData`. The probe is parented to its scene, one per scene, so its `AMikanLightEnvironmentActor` is part of the scene's subtree: an inactive scene's sky light is hidden with the scene and lights nothing, and the current scene's probe is the one that lights the level. Two visible scenes, one of them through Force Render, each contribute their own sky light.
+
 `AMikanClient::SetActiveMikanScene` is still Blueprint callable and still fires the `OnSceneActivated` / `OnSceneDeactivated` events, so a Blueprint can override the choice. The next `current_scene_id` change from the editor takes it back.
 
 ## Automation

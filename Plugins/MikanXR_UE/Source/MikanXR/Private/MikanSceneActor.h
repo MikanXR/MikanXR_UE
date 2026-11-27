@@ -18,12 +18,20 @@ public:
 	virtual void Describe(TArray<FString>& OutLines) const override;
 
 	inline int32 GetParentStageId() const { return ParentStageId; }
-	inline int32 GetDisplayCompositorId() const { return DisplayCompositorId; }
+	// The camera the scene is shot through, or -1 for none
+	inline int32 GetCameraId() const { return CameraId; }
+	// The scene's lighting probe, or -1 before the first capture. The probe is parented to the
+	// scene, so its AMikanLightEnvironmentActor hides, and stops lighting, with the scene.
+	inline int32 GetLightEnvironmentId() const { return LightEnvironmentId; }
+	// The DMX lighting preset the scene falls back to, or -1 for none
+	inline int32 GetLightingPresetId() const { return LightingPresetId; }
 	inline bool GetForceRender() const { return bForceRender; }
 
 private:
 	int32 ParentStageId = -1;
-	int32 DisplayCompositorId = -1;
+	int32 CameraId = -1;
+	int32 LightEnvironmentId = -1;
+	int32 LightingPresetId = -1;
 	bool bForceRender = false;
 };
 

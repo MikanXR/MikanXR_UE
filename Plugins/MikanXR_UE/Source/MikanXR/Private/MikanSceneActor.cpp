@@ -25,7 +25,9 @@ void UMikanSceneData::Initialize(const Serialization::PolymorphicObjectPtr& InVa
 	UMikanTransformData::Initialize(InValuesObject);
 
 	const auto* SceneValues = InValuesObject.getTypedPointer<MikanSceneComponentValues>();
-	DisplayCompositorId = SceneValues->display_compositor_id;
+	CameraId = SceneValues->camera_id;
+	LightEnvironmentId = SceneValues->light_environment_id;
+	LightingPresetId = SceneValues->lighting_preset_id;
 	bForceRender = SceneValues->force_render;
 }
 
@@ -36,9 +38,19 @@ bool UMikanSceneData::ApplyMikanValue(const FString& FieldName, const MikanVaria
 		ParentStageId = FieldValue.getIntValue();
 		return true;
 	}
-	else if (FieldName == "display_compositor_id")
+	else if (FieldName == "camera_id")
 	{
-		DisplayCompositorId = FieldValue.getIntValue();
+		CameraId = FieldValue.getIntValue();
+		return true;
+	}
+	else if (FieldName == "light_environment_id")
+	{
+		LightEnvironmentId = FieldValue.getIntValue();
+		return true;
+	}
+	else if (FieldName == "lighting_preset_id")
+	{
+		LightingPresetId = FieldValue.getIntValue();
 		return true;
 	}
 	else if (FieldName == "force_render")
@@ -56,7 +68,9 @@ void UMikanSceneData::Describe(TArray<FString>& OutLines) const
 {
 	UMikanTransformData::Describe(OutLines);
 	Mikan::AppendDescribeLine(OutLines, TEXT("parent_stage_id"), ParentStageId);
-	Mikan::AppendDescribeLine(OutLines, TEXT("display_compositor_id"), DisplayCompositorId);
+	Mikan::AppendDescribeLine(OutLines, TEXT("camera_id"), CameraId);
+	Mikan::AppendDescribeLine(OutLines, TEXT("light_environment_id"), LightEnvironmentId);
+	Mikan::AppendDescribeLine(OutLines, TEXT("lighting_preset_id"), LightingPresetId);
 	Mikan::AppendDescribeLine(OutLines, TEXT("force_render"), bForceRender);
 }
 
